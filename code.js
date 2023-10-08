@@ -82,11 +82,11 @@ function setShift(shifts, shouldDeleteEvent = true) {
     //登録済みのシフト情報を削除する場合に、このコードによって登録されたイベントを削除する。
     if (shouldDeleteEvent) {
         const events = calendar.getEvents(shifts[0].startDate, shifts[shifts.length - 1].endDate)
-        const filteredEvents = events.filter(event => event.getTitle().indexOf(credit) !== -1)
-        for (const event of events) event.deleteEvent()
+        const filteredEvents = events.filter(event => event.getDescription().indexOf(credit) !== -1)
+        for (const event of filteredEvents) event.deleteEvent()
     }
 
     for (const shift of shifts) {
-        calendar.createEvent(`${shift.workplace} ${credit}`, shift.startDate, shift.endDate)
+        calendar.createEvent(`${shift.workplace}`, shift.startDate, shift.endDate, { description: credit })
     }
 }
