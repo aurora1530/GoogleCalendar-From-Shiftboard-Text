@@ -1,10 +1,10 @@
 function main() {
     //バッククオートの間にシフトボードの共有で生成されるテキストを貼り付ける。「バイト先の表示」は有効でも無効でもよい。
     const text = ``
-    const shouldCurrentEvent = true //【true推奨】textに記述されている最初と最後の日付の範囲内で既にこのプログラムによって登録されているカレンダーのイベントを削除するかどうか。
+    const shouldDeleteEvent = true //【true推奨】textに記述されている最初と最後の日付の範囲内で既にこのプログラムによって登録されているカレンダーのイベントを削除するかどうか。
 
     //実行
-    setShift(createShiftsArray(text), shouldCurrentEvent)
+    setShift(createShiftsArray(text), shouldDeleteEvent)
 }
 
 
@@ -72,15 +72,15 @@ function createShiftsArray(text) {
  * genShiftsFromShiftboardTextで生成した、シフト情報のオブジェクトを要素とする配列を、Googleカレンダーに登録する。
  * カレンダーIDはスクリプトプロパティに「CALENDAR_ID」というキーで保存する必要がある。
  * @param {Array<Object>} shifts - createShiftsFromShiftboardText関数で作製された配列
- * @param {shouldCurrentEvent} shouldCurrentEvent - shiftsで登録するシフトの最初の日付から最後の日付までの間に、既に登録されているシフト情報を削除するかどうか。デフォルトはtrue
+ * @param {shouldCurrentEvent} shouldDeleteEvent - shiftsで登録するシフトの最初の日付から最後の日付までの間に、既に登録されているシフト情報を削除するかどうか。デフォルトはtrue
  */
-function setShift(shifts, shouldCurrentEvent = true) {
+function setShift(shifts, shouldDeleteEvent = true) {
     const CALENDAR_ID = PropertiesService.getScriptProperties().getProperty("CALENDAR_ID")
     const calendar = CalendarApp.getCalendarById(CALENDAR_ID)
 
     const credit = 'Created By GAS'
     //登録済みのシフト情報を削除する場合に、このコードによって登録されたイベントを削除する。
-    if (shouldCurrentEvent) {
+    if (shouldDeleteEvent) {
         const events = calendar.getEvents(shifts[0].startDate, shifts[shifts.length - 1].endDate)
         const filteredEvents = events.filter(event => event.getTitle().indexOf(credit) !== -1)
         for (const event of events) event.deleteEvent()
